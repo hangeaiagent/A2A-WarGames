@@ -1,0 +1,80 @@
+name: PR Review Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  pr-quality:
+    name: PR Quality Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check state.json not stale
+        run: |
+          # Warn if state.json has in_progress tasks from >24h ago
+          if python3 -c "
+          import json, sys
+          from datetime import datetime, timezone, timedelta
+          state = json.load(open('state.json'))
+          tasks = state.get('local_tasks', {}).get('in_progress', [])
+          stale = []
+          for t in tasks:
+              ts = t.get('started_at', '')
+              if ts:
+                  try:
+                      dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+                      if datetime.now(timezone.utc) - dt > timedelta(hours=24):
+                          stale.append(t.get('task', 'unknown'))
+                  except ValueError:
+                      pass
+          if stale:
+              for s in stale:
+                  print(f'::warning::Stale in-progress task (>24h): {s}')
+          "; then
+            echo "state.json checked"
+          fi
+
+      - name: No debug statements in source
+        run: |
+          # Check for common debug leftovers
+          found=0
+          if grep -rn "console\.log\|debugger\|import pdb\|pdb\.set_trace\|breakpoint()" \
+               --include="*.py" --include="*.js" --include="*.vue" \
+               backend/ frontend/src/ 2>/dev/null | grep -v "node_modules" | head -20; then
+            echo "::warning::Debug statements found in source code"
+            found=1
+          fi
+          if [ "$found" -eq 0 ]; then
+            echo "No debug statements found"
+          fi
+
+      - name: Check for file lock conflicts
+        run: |
+          python3 -c "
+          import json, sys
+          state = json.load(open('state.json'))
+          locks = state.get('file_locks', {})
+          # Filter out _doc keys
+          real_locks = {k: v for k, v in locks.items() if not k.startswith('_')}
+          if real_locks:
+              print('::warning::Active file locks detected:')
+              for f, info in real_locks.items():
+                  print(f'  {f}: {info}')
+          else:
+              print('No active file locks')
+          "
+
+      - name: Progress log updated
+        run: |
+          # Check that progress log has been updated within the last 7 days
+          if [ -f "claude-progress.txt" ]; then
+            last_date=$(grep -oP '\d{4}-\d{2}-\d{2}' claude-progress.txt | tail -1)
+            if [ -n "$last_date" ]; then
+              echo "Last progress entry: $last_date"
+            fi
+          fi

@@ -1,0 +1,81 @@
+/*
+ * BRAND REFERENCE — SIA3000 / Entreprise3000 Design System
+ * Source: SIA3000_Mandat_2/Livrable_2_App/src/styles/theme.css
+ *
+ * This file is a REFERENCE for the A2A War Games theme.
+ * It should NOT be imported directly — the values here should be
+ * mapped into variables.css and global.css.
+ *
+ * Tailwind config equivalent:
+ *   navy: { deep: '#1a1a2e', mid: '#16213e', light: '#0f3460' }
+ *   accent: '#e94560'
+ *   success: '#27ae60'
+ *   warn: '#e67e22'
+ *   danger: '#c0392b'
+ *   info: '#2980b9'
+ *   fontFamily: "'Segoe UI', system-ui, sans-serif"
+ */
+
+/* === LIGHT THEME TOKENS === */
+:root {
+  --navy-deep: #1a1a2e;
+  --navy-mid: #16213e;
+  --navy-light: #0f3460;
+  --accent: #e94560;
+  --enthusiast: #27ae60;
+  --conditional: #e67e22;
+  --critical: #c0392b;
+  --strategic: #2980b9;
+  --founder: #0f3460;
+  --surface-dim: #f4f6f9;
+  --surface-bright: #ffffff;
+  --text-faded: #999999;
+  --glow-green: rgba(39, 174, 96, 0.15);
+  --glow-red: rgba(192, 57, 43, 0.15);
+  --glow-blue: rgba(41, 128, 185, 0.15);
+}
+
+/* === DARK THEME TOKENS (class-based) === */
+.dark {
+  --navy-deep: #0a0a14;
+  --surface-bright: #1a1a2e;
+  --surface-dim: #12121e;
+}
+
+/* === ATTITUDE COLORS === */
+/* enthusiast: #27ae60 (green)
+ * conditional: #e67e22 (orange)
+ * critical: #c0392b (red)
+ * strategic: #2980b9 (blue)
+ * founder: #0f3460 (navy)
+ */
+
+/* === DEPARTMENT COLORS === */
+/* direction: #0f3460 (navy)
+ * ventes: #27ae60 (green)
+ * operations: #e67e22 (orange)
+ * rh: #16a085 (teal)
+ * finance: #2980b9 (blue)
+ * ti: #c0392b (red)
+ * plancher: #8e44ad (purple)
+ */
+
+/* === SCORE COLORS (ADKAR / Maturity) === */
+/* >= 4: #27ae60 (green)
+ * >= 3: #f1c40f (yellow)
+ * >= 2: #e67e22 (orange)
+ *  < 2: #c0392b (red)
+ */
+
+/* === MAPPING TO CURRENT variables.css ===
+ * --bg      → #0a0a14 (was #0d1117) — navy-deep dark
+ * --surface → #1a1a2e (was #161b22) — navy-deep light
+ * --border  → #16213e (was #30363d) — navy-mid
+ * --accent  → #e94560 (was #58a6ff) — brand accent pink
+ * --accent-dim → #2a1525 (was #1f4068) — dark accent bg
+ * --text    → #e0e0e0 (was #e6edf3) — light text
+ * --text-muted → #999999 (was #8b949e) — text-faded
+ * --danger  → #c0392b (was #f85149) — critical red
+ * --success → #27ae60 (was #3fb950) — enthusiast green
+ * --warn    → #e67e22 (was #d29922) — conditional orange
+ */

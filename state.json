@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "purpose": "Cross-agent coordination file. All agents MUST read this before starting work.",
+    "updated_at": "2026-01-01T00:00:00Z",
+    "updated_by": "initial",
+    "schema_version": "1.0"
+  },
+  "file_locks": {
+    "_doc": "No active file locks. All files safe to edit."
+  },
+  "safe_to_edit": {
+    "_doc": "All files safe to edit.",
+    "frontend": [
+      "frontend/src/**/*"
+    ],
+    "backend": [
+      "backend/**/*"
+    ],
+    "docs": [
+      "docs/*",
+      "README.md",
+      "state.json"
+    ]
+  },
+  "conflict_zones": {
+    "_doc": "No active conflicts."
+  },
+  "local_tasks": {
+    "_doc": "Tasks being worked on locally.",
+    "in_progress": [],
+    "blocked_by_prs": [],
+    "ready_to_start": []
+  },
+  "pull_requests": {},
+  "branches": {}
+}

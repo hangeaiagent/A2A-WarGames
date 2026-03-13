@@ -1,0 +1,41 @@
+# Core
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+sqlalchemy>=2.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+httpx>=0.27.0
+python-dotenv>=1.0.0
+
+# Form data / file uploads (required by audio endpoints)
+python-multipart>=0.0.9
+
+# SSE streaming
+sse-starlette>=2.0.0
+
+# Analytics — NLP & embeddings
+sentence-transformers>=2.7.0
+vaderSentiment>=3.3.2
+numpy>=1.26.0
+
+# Analytics — clustering & graphs
+hdbscan>=0.8.33
+networkx>=3.3
+
+# PostgreSQL
+psycopg2-binary>=2.9.9
+
+# Vector embeddings (pgvector SQLAlchemy integration)
+pgvector>=0.3.6
+
+# Auth
+PyJWT>=2.8.0
+
+# Encryption (CR-019: API key encryption at rest)
+cryptography>=42.0.0
+
+# Anthropic native SDK (for direct Claude API calls without OAI proxy)
+anthropic>=0.40.0
+
+# Testing async backends
+trio>=0.27.0

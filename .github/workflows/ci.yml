@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main, new-UI]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: wargames_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/wargames_test
+          TESTING: "1"
+        run: python -m pytest backend/tests/ -x -q --tb=short
+
+  frontend-build:
+    name: Frontend Build & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run tests
+        working-directory: frontend
+        run: npx vitest run --reporter=verbose
+
+  structural-integrity:
+    name: Structural Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Required files exist
+        run: |
+          files=(
+            "AGENTS.md"
+            "CLAUDE.md"
+            "state.json"
+            "claude-progress.txt"
+            "requirements.txt"
+            "frontend/package.json"
+          )
+          missing=0
+          for f in "${files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "::error::Required files are missing"
+            exit 1
+          fi
+          echo "All required files present"
+
+      - name: Validate JSON files
+        run: |
+          for f in state.json frontend/package.json; do
+            if ! python3 -c "import json; json.load(open('$f'))"; then
+              echo "::error::Invalid JSON: $f"
+              exit 1
+            fi
+          done
+          echo "All JSON files valid"
+
+      - name: AGENTS.md line budget
+        run: |
+          lines=$(wc -l < AGENTS.md)
+          if [ "$lines" -gt 200 ]; then
+            echo "::warning::AGENTS.md is $lines lines (budget: 200). Consider trimming."
+          fi
+          echo "AGENTS.md: $lines lines"
+
+      - name: Progress log not empty
+        run: |
+          if [ ! -s "claude-progress.txt" ]; then
+            echo "::error::claude-progress.txt is empty"
+            exit 1
+          fi
+          echo "Progress log has content"

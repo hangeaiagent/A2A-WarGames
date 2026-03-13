@@ -1,0 +1,336 @@
+{
+  "project": {
+    "name": "Northbridge City — Smart Infrastructure Initiative",
+    "description": "Stakeholder wargame for a fictional city's proposed AI-powered traffic and utilities management system.",
+    "organization": "City of Northbridge (fictional)",
+    "context": "Northbridge is a mid-sized fictional city of 250,000 residents. The mayor's office is proposing a $40M Smart Infrastructure Initiative: AI-managed traffic signals, predictive utilities maintenance, and a public safety analytics dashboard. Stakeholders have widely divergent priorities around budget, privacy, labour, and equity."
+  },
+  "stakeholders": [
+    {
+      "slug": "mayor_chen",
+      "name": "Mayor Chen",
+      "role": "Mayor",
+      "department": "executive",
+      "attitude": "champion",
+      "attitude_label": "Visionary Champion",
+      "influence": 1.0,
+      "interest": 0.95,
+      "avatar_url": null,
+      "needs": [
+        "legacy-project",
+        "efficiency-gains",
+        "re-election-narrative"
+      ],
+      "fears": [
+        "cost-overrun",
+        "public-backlash",
+        "project-failure"
+      ],
+      "quote": "Northbridge must lead, not follow.",
+      "signal_cle": "Highly motivated but politically exposed. Needs a win before the next election cycle.",
+      "adkar": {
+        "awareness": 5,
+        "desire": 5,
+        "knowledge": 3,
+        "ability": 2,
+        "reinforcement": 3
+      },
+      "color": "#1a5276",
+      "salience_power": 10,
+      "salience_legitimacy": 10,
+      "salience_urgency": 9,
+      "salience_type": "definitive",
+      "mendelow_quadrant": "manage_closely",
+      "communication_style": "visionary_inspiring",
+      "attitude_baseline": "enthusiastic_champion",
+      "interest_alignment": 1,
+      "cognitive_biases": [
+        "optimism_bias",
+        "planning_fallacy"
+      ],
+      "batna": "Scale back to a pilot in one district only",
+      "hard_constraints": [
+        "NEVER approve anything that puts citizen data at risk of a breach",
+        "NEVER commit to a timeline that cannot be met before the election",
+        "NEVER exceed the $40M budget cap without explicit council approval"
+      ],
+      "success_criteria": [
+        "Traffic flow improvement measurable within 18 months",
+        "At least three departments show cost savings in year one",
+        "Zero major privacy incidents during rollout"
+      ],
+      "key_concerns": [
+        "The public consultation process must be seen as genuine, not theatrical",
+        "Vendor lock-in would be catastrophic — must insist on open standards",
+        "Labour unions need to be brought along early or they will become opponents"
+      ],
+      "grounding_quotes": [
+        "I did not run for mayor to manage the status quo. But I also cannot afford a $40M failure.",
+        "If we get this right, Northbridge becomes the model every city in the country looks to."
+      ]
+    },
+    {
+      "slug": "director_okafor",
+      "name": "Director Okafor",
+      "role": "Director of Public Works",
+      "department": "public_works",
+      "attitude": "skeptic",
+      "attitude_label": "Pragmatic Skeptic",
+      "influence": 0.8,
+      "interest": 0.85,
+      "avatar_url": null,
+      "needs": [
+        "reliable-infrastructure",
+        "manageable-workload",
+        "staff-capacity"
+      ],
+      "fears": [
+        "system-failure",
+        "blame-for-outages",
+        "workforce-disruption"
+      ],
+      "quote": "Show me it works before you show me the press release.",
+      "signal_cle": "20 years of operational experience. Has seen technology promises fail. Needs proof, not pitch decks.",
+      "adkar": {
+        "awareness": 4,
+        "desire": 2,
+        "knowledge": 3,
+        "ability": 3,
+        "reinforcement": 2
+      },
+      "color": "#784212",
+      "salience_power": 8,
+      "salience_legitimacy": 9,
+      "salience_urgency": 6,
+      "salience_type": "dominant",
+      "mendelow_quadrant": "manage_closely",
+      "communication_style": "evidence_based_direct",
+      "attitude_baseline": "skeptical_pragmatic",
+      "interest_alignment": 0,
+      "cognitive_biases": [
+        "status_quo_bias",
+        "experience_anchoring"
+      ],
+      "batna": "Maintain current systems with incremental upgrades from existing capital budget",
+      "hard_constraints": [
+        "NEVER approve a system without a 99.5% uptime SLA with financial penalties",
+        "NEVER reduce frontline maintenance staff below current levels",
+        "NEVER go live without a full 6-month parallel-run period"
+      ],
+      "success_criteria": [
+        "Predictive maintenance reduces emergency callouts by at least 20%",
+        "Zero critical infrastructure failures attributable to the new system in year one",
+        "Staff complete training and report confidence with the new tools"
+      ],
+      "key_concerns": [
+        "Who is on call at 2am when the system goes down? My people.",
+        "The vendor will be gone in 3 years. My team has to maintain this forever.",
+        "I need a real disaster-recovery plan, not a slide about resilience."
+      ],
+      "grounding_quotes": [
+        "Every vendor promises 99.9% uptime. I want to know what happens in the 0.1%.",
+        "My job is to make sure the water runs and the lights stay on. Period."
+      ]
+    },
+    {
+      "slug": "cllr_vasquez",
+      "name": "Councillor Vasquez",
+      "role": "City Councillor — Ward 4 (East Side)",
+      "department": "council",
+      "attitude": "conditional",
+      "attitude_label": "Equity Advocate",
+      "influence": 0.7,
+      "interest": 0.9,
+      "avatar_url": null,
+      "needs": [
+        "equitable-distribution",
+        "community-trust",
+        "accountability"
+      ],
+      "fears": [
+        "algorithmic-bias",
+        "displacement",
+        "surveillance-creep"
+      ],
+      "quote": "Technology should serve everyone, not just the people who can afford it.",
+      "signal_cle": "Represents the most diverse and lower-income ward. Will block if equity safeguards are weak.",
+      "adkar": {
+        "awareness": 4,
+        "desire": 3,
+        "knowledge": 4,
+        "ability": 3,
+        "reinforcement": 2
+      },
+      "color": "#1e8449",
+      "salience_power": 7,
+      "salience_legitimacy": 9,
+      "salience_urgency": 8,
+      "salience_type": "dominant",
+      "mendelow_quadrant": "manage_closely",
+      "communication_style": "values_driven_community",
+      "attitude_baseline": "conditional_advocate",
+      "interest_alignment": 0,
+      "cognitive_biases": [
+        "confirmation_bias_equity",
+        "representativeness_heuristic"
+      ],
+      "batna": "Vote against and campaign for a community-led alternative",
+      "hard_constraints": [
+        "NEVER support a public safety analytics system without independent algorithmic audit provisions",
+        "NEVER agree to a rollout that starts in wealthy wards before equity considerations are resolved",
+        "NEVER allow data collected from public spaces to be shared with federal law enforcement"
+      ],
+      "success_criteria": [
+        "Formal equity impact assessment completed before any contract is signed",
+        "Community advisory board with real decision-making power",
+        "Ward 4 receives infrastructure investment proportional to its needs"
+      ],
+      "key_concerns": [
+        "The smart traffic system will optimize for commuter flow, not for residents walking to the bus stop.",
+        "Once you build the surveillance infrastructure, you cannot un-build it.",
+        "I need to be able to go back to my community and explain why this is good for them."
+      ],
+      "grounding_quotes": [
+        "I have watched smart city projects in other cities widen inequality. I will not let that happen here.",
+        "An audit after the fact is not accountability. I want the guardrails built in from day one."
+      ]
+    },
+    {
+      "slug": "cfo_hartley",
+      "name": "CFO Hartley",
+      "role": "Chief Financial Officer",
+      "department": "finance",
+      "attitude": "gatekeeper",
+      "attitude_label": "Fiscal Gatekeeper",
+      "influence": 0.85,
+      "interest": 0.75,
+      "avatar_url": null,
+      "needs": [
+        "roi-evidence",
+        "budget-control",
+        "risk-containment"
+      ],
+      "fears": [
+        "cost-overrun",
+        "multi-year-liabilities",
+        "audit-findings"
+      ],
+      "quote": "A good idea with a bad business case is still a bad decision.",
+      "signal_cle": "Controls the purse strings. Will not approve without a credible 5-year financial model.",
+      "adkar": {
+        "awareness": 3,
+        "desire": 2,
+        "knowledge": 3,
+        "ability": 3,
+        "reinforcement": 2
+      },
+      "color": "#6c3483",
+      "salience_power": 9,
+      "salience_legitimacy": 9,
+      "salience_urgency": 5,
+      "salience_type": "definitive",
+      "mendelow_quadrant": "manage_closely",
+      "communication_style": "analytical_risk_focused",
+      "attitude_baseline": "neutral_cautious",
+      "interest_alignment": 0,
+      "cognitive_biases": [
+        "loss_aversion",
+        "anchoring_bias_budget"
+      ],
+      "batna": "Propose a 3-year phased feasibility study funded from reserves",
+      "hard_constraints": [
+        "NEVER approve a contract without a cost-overrun liability clause capped at 15%",
+        "NEVER commit to ongoing SaaS fees exceeding 8% of capital investment annually",
+        "NEVER approve without a signed independent financial review of vendor projections"
+      ],
+      "success_criteria": [
+        "Payback period under 7 years based on conservative assumptions",
+        "Contingency reserve of at least 12% included in the approved budget",
+        "Clear exit clauses in all vendor contracts"
+      ],
+      "key_concerns": [
+        "The efficiency savings are projections. The $40M cost is real.",
+        "I have seen three transformative IT projects in this city. Two ran 40% over budget.",
+        "What happens to the contract if the vendor is acquired or goes bankrupt in year two?"
+      ],
+      "grounding_quotes": [
+        "I am not saying no. I am saying show me the numbers that hold up under scrutiny.",
+        "The mayor's enthusiasm is not a financial instrument."
+      ]
+    },
+    {
+      "slug": "rep_morrison",
+      "name": "Union Rep Morrison",
+      "role": "CUPE Local 4501 — City Workers Representative",
+      "department": "labour",
+      "attitude": "opponent",
+      "attitude_label": "Labour Advocate",
+      "influence": 0.65,
+      "interest": 0.95,
+      "avatar_url": null,
+      "needs": [
+        "job-security",
+        "fair-transition",
+        "worker-agency"
+      ],
+      "fears": [
+        "automation-displacement",
+        "deskilling",
+        "monitoring"
+      ],
+      "quote": "Our members built this city. They will not be replaced by an algorithm.",
+      "signal_cle": "Represents 800 city workers. Has a legal obligation to challenge changes affecting working conditions.",
+      "adkar": {
+        "awareness": 5,
+        "desire": 1,
+        "knowledge": 3,
+        "ability": 2,
+        "reinforcement": 1
+      },
+      "color": "#c0392b",
+      "salience_power": 6,
+      "salience_legitimacy": 8,
+      "salience_urgency": 9,
+      "salience_type": "dependent",
+      "mendelow_quadrant": "keep_informed",
+      "communication_style": "adversarial_protective",
+      "attitude_baseline": "resistant_opponent",
+      "interest_alignment": -1,
+      "cognitive_biases": [
+        "zero_sum_thinking",
+        "worst_case_anchoring"
+      ],
+      "batna": "File a formal grievance under the collective agreement and mobilize members",
+      "hard_constraints": [
+        "NEVER accept automation that reduces the total number of unionized positions",
+        "NEVER allow AI performance monitoring data to be used in disciplinary proceedings",
+        "NEVER agree to a plan without a no-layoffs guarantee for at least 5 years"
+      ],
+      "success_criteria": [
+        "Written commitment: no involuntary layoffs as a result of this initiative for 5 years",
+        "Joint labour-management committee with veto power over AI use in performance management",
+        "Retraining program funded by the city, not workers"
+      ],
+      "key_concerns": [
+        "When the system flags that a pothole was missed, who gets blamed — the algorithm or my member?",
+        "Management will use efficiency as cover for cutting positions in the next contract negotiations.",
+        "I need language in the collective agreement, not promises in a PowerPoint."
+      ],
+      "grounding_quotes": [
+        "Technology is a tool. Who controls the tool controls the work.",
+        "I am not anti-technology. I am pro-worker. Those are not the same thing."
+      ]
+    }
+  ],
+  "debate_topic": "Should Northbridge proceed with the full $40M Smart Infrastructure Initiative as proposed, approve a reduced pilot program, or reject the proposal and pursue incremental upgrades instead?",
+  "rounds": 4,
+  "language": "en",
+  "tags": [
+    "smart-city",
+    "public-sector",
+    "ai-governance",
+    "labour-relations",
+    "equity",
+    "infrastructure"
+  ]
+}

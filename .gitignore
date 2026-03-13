@@ -1,0 +1,109 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+*.env.local
+.mcp.json
+
+# Database
+*.db
+*.sqlite3
+
+# Node
+node_modules/
+frontend/dist/
+frontend/dist-ssr/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Model cache
+.cache/
+sentence-transformers/
+
+# Test / coverage artifacts
+.coverage
+coverage.json
+coverage/
+htmlcov/
+_pytest/
+.pytest_cache/
+*.pth
+
+# Stray pip installs (should be in .venv/)
+colorama/
+*.dist-info/
+iniconfig/
+packaging/
+pluggy/
+pygments/
+pytest/
+pytest_cov/
+py.py
+bin/
+
+# Debug logs
+*.log
+backend_test_*.log
+e2e_test_*.log
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Test scripts and runners
+e2e_test_runner.py
+*_test_*.py
+
+# Ignored directories
+research/
+OpenClaw-A2A-hub/
+
+# Claude Code — ignore all session files (hooks are generated, not tracked)
+.claude/*
+!.claude/settings.json
+.claude/scheduled_tasks.lock
+.claude/worktrees/
+.claude/skills/
+frontend/.claude/
+
+# Agent skills (installed via npx skills add / Claude Code agents)
+.agent/
+.agents/
+
+# Playwright CLI artifacts
+.playwright-cli/
+
+# Handover docs (session-specific)
+HANDOVER.md
+security_violation.md
+
+# Docs — keep LOCAL_TASKS.md, ignore everything else
+docs/*
+!docs/LOCAL_TASKS.md
+!docs/Analysis/
+!docs/CR-*.md
+!docs/DEPLOYMENT.md
+!docs/PRD.md
+!docs/oauth-setup.md
+

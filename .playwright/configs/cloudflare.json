@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "launchOptions": {
+      "channel": "chrome",
+      "headless": false,
+      "args": ["--profile-directory=Default"]
+    },
+    "userDataDir": "C:/Users/Laptop/AppData/Local/Google/Chrome/User Data"
+  }
+}
