@@ -50,6 +50,14 @@ const routes = [
     },
   },
   { path: '/settings', component: () => import('../pages/SettingsPage.vue'), meta: { breadcrumb: [{ to: '/settings', labelKey: 'nav.settings' }] } },
+  { path: '/token-usage', component: () => import('../pages/TokenUsagePage.vue'), meta: { breadcrumb: [{ to: '/token-usage', labelKey: 'userMenu.tokenUsage' }] } },
+  { path: '/game-history', component: () => import('../pages/GameHistoryPage.vue'), meta: { breadcrumb: [{ to: '/game-history', labelKey: 'userMenu.gameHistory' }] } },
+  {
+    path: '/match/:id',
+    beforeEnter: (to) => {
+      window.location.href = `https://www.agentpit.io/matches/${to.params.id}`
+    },
+  },
 ]
 
 export default createRouter({

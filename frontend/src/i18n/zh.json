@@ -557,6 +557,29 @@
     "spanish": "Español",
     "chinese": "中文"
   },
+  "userMenu": {
+    "tokenUsage": "Token 消耗",
+    "gameHistory": "游戏历史"
+  },
+  "tokenUsage": {
+    "title": "Token 消耗",
+    "subtitle": "查看您的 LLM Token 使用情况",
+    "totalTokens": "总 Token 数",
+    "promptTokens": "提示 Token",
+    "completionTokens": "生成 Token",
+    "sessionCount": "会话数",
+    "bySession": "按会话明细",
+    "session": "会话",
+    "date": "日期",
+    "noData": "暂无 Token 使用数据。开始一场推演后数据将在此显示。"
+  },
+  "gameHistory": {
+    "title": "游戏历史",
+    "subtitle": "查看您所有的兵棋推演记录",
+    "noGames": "暂无游戏记录。开始您的第一场推演吧。",
+    "participants": "{count} 位参与者",
+    "consensus": "共识度"
+  },
   "guest": {
     "signInToCreate": "登录以创建项目",
     "signInToRun": "登录以运行会话",

@@ -557,6 +557,29 @@
     "spanish": "Español",
     "chinese": "中文"
   },
+  "userMenu": {
+    "tokenUsage": "Consommation de tokens",
+    "gameHistory": "Historique des jeux"
+  },
+  "tokenUsage": {
+    "title": "Consommation de tokens",
+    "subtitle": "Suivez votre consommation de tokens LLM",
+    "totalTokens": "Total de tokens",
+    "promptTokens": "Tokens de prompt",
+    "completionTokens": "Tokens de complétion",
+    "sessionCount": "Sessions",
+    "bySession": "Utilisation par session",
+    "session": "Session",
+    "date": "Date",
+    "noData": "Aucune donnée de consommation. Lancez une session pour voir les résultats ici."
+  },
+  "gameHistory": {
+    "title": "Historique des jeux",
+    "subtitle": "Consultez toutes vos sessions de wargame",
+    "noGames": "Aucun jeu pour le moment. Lancez votre première session.",
+    "participants": "{count} participants",
+    "consensus": "Consensus"
+  },
   "guest": {
     "signInToCreate": "Connectez-vous pour créer des projets",
     "signInToRun": "Connectez-vous pour lancer des sessions",
