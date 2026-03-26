@@ -138,7 +138,7 @@
     "batna": "BATNA（最佳替代方案）",
     "batnaPlaceholder": "如果本提案失败，他们的退路是什么？",
     "hardConstraints": "硬性约束（每行一条——不可谈判的底线）",
-    "successCriteria": "成功标准（每行一条——何为"胜利"）",
+    "successCriteria": "成功标准（每行一条——何为「胜利」）",
     "keyConcerns": "核心关切（每行一条）",
     "grounding": "背景依据",
     "groundingQuotes": "背景引言（每行一条——逐字访谈引言）",
@@ -409,7 +409,7 @@
   },
   "transcript": {
     "debateTranscript": "辩论记录",
-    "startWargame": "点击"开始推演"以开始",
+    "startWargame": "点击「开始推演」以开始",
     "waitingForTurn": "等待第一次发言...",
     "preparingAgents": "智能体正在热身并准备立场",
     "statusExtracting": "分析问题并提取议程项...",
