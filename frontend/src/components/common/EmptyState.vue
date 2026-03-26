@@ -1,7 +1,10 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 defineProps({
   icon: { type: String, default: '📭' },
-  title: { type: String, default: 'Nothing here yet' },
+  title: { type: String, default: '' },
   subtitle: { type: String, default: '' },
 })
 </script>
@@ -9,7 +12,7 @@ defineProps({
 <template>
   <div class="empty-state-card">
     <div class="empty-icon">{{ icon }}</div>
-    <div class="empty-title">{{ title }}</div>
+    <div class="empty-title">{{ title || t('common.nothingHereYet') }}</div>
     <div v-if="subtitle" class="empty-subtitle">{{ subtitle }}</div>
     <slot />
   </div>

@@ -12,6 +12,7 @@ import logging
 from typing import Optional
 
 from .llm_client import get_completion_json
+from .prompt_lang import _t, OBSERVER_SYSTEM_PROMPT_I18N, OBS
 
 logger = logging.getLogger(__name__)
 
@@ -19,58 +20,8 @@ MAX_MEMORY_CONTENT_LENGTH = 200  # CR-010: max chars per memory candidate conten
 MAX_MEMORY_CANDIDATES_PER_TURN = 3  # CR-010: max memories extracted per turn
 
 
-OBSERVER_SYSTEM_PROMPT = """You are the Observer agent in a stakeholder wargame simulation.
-
-## YOUR ROLE
-You are a silent analyst. You NEVER speak in the debate. Your job is to extract
-structured data from each stakeholder turn.
-
-## OUTPUT FORMAT
-You MUST respond with a single JSON object containing these exact fields:
-
-{
-  "position_summary": "1-2 sentence summary of this speaker's current position",
-  "sentiment": {
-    "overall": <float -1.0 to +1.0>,
-    "anxiety": <float 0.0 to 1.0>,
-    "trust": <float 0.0 to 1.0>,
-    "aggression": <float 0.0 to 1.0>,
-    "compliance": <float 0.0 to 1.0>
-  },
-  "behavioral_signals": {
-    "concession_offered": <boolean>,
-    "agreement_with": [<list of stakeholder names they agreed with>],
-    "disagreement_with": [<list of stakeholder names they disagreed with>],
-    "challenge_intensity": <int 1-5>,
-    "position_stability": <float 0.0 to 1.0, where 1.0 = hasn't moved from baseline>,
-    "escalation": <boolean>
-  },
-  "claims": [<list of specific factual/logical claims made>],
-  "fears_triggered": [<list of fear keywords that were activated>],
-  "needs_referenced": [<list of need keywords that were mentioned>],
-  "agenda_votes": {
-    "<item_key>": {"stance": "agree|oppose|neutral|abstain", "confidence": <float 0.0-1.0>}
-  },
-  "memory_candidates": [
-    {
-        "type": "<concession|alliance|escalation|proposal|agreement|disagreement|fear_triggered|belief_update>",
-        "content": "<1 sentence describing the memorable event, max 30 words>",
-        "salience": <0.0-1.0 importance score>,
-        "related_agents": ["<slug of other agents involved, if any>"]
-    }
-  ]
-}
-
-## RULES
-- Be precise. Use the exact field names above.
-- sentiment.overall: negative = opposing, positive = supportive of the proposal
-- position_stability: compare to the speaker's known baseline position
-- claims: extract concrete arguments, not vague statements. Max 4 claims, each under 15 words.
-- Only include fears/needs that are ACTUALLY referenced in the text. Max 3 items each.
-- agenda_votes: only populate if agenda items are provided; otherwise use an empty object {}
-- memory_candidates: Extract 0-3 memorable events from this turn. Only include genuinely significant moments: concessions, new alliances, escalations, concrete proposals, fear triggers. Do NOT create memories for routine statements or repetition. If nothing memorable happened, return an empty array [].
-- IMPORTANT: Be concise. position_summary must be 1 sentence only (max 25 words). Output ONLY the JSON object, no explanation.
-"""
+# Legacy constant kept for backward compat; new code uses OBSERVER_SYSTEM_PROMPT_I18N
+OBSERVER_SYSTEM_PROMPT = OBSERVER_SYSTEM_PROMPT_I18N["en"]
 
 
 async def extract_turn_data(
@@ -84,39 +35,41 @@ async def extract_turn_data(
     turn_num: int,
     speaker_profile: Optional[dict] = None,
     agenda_items: Optional[list] = None,
+    locale: str = "en",
 ) -> dict:
     """
     Run the Observer agent on a single turn to extract structured metrics.
 
     Returns a dict matching the Observer JSON schema, or a fallback on failure.
     """
-    user_content = f"## Turn {turn_num}, Round {round_num}\n"
-    user_content += f"**Speaker:** {speaker_name}\n\n"
+    user_content = _t(OBS["turn_header"], locale).format(t=turn_num, r=round_num)
+    user_content += _t(OBS["speaker"], locale).format(v=speaker_name)
 
     if speaker_profile:
-        user_content += f"**Known baseline:** {speaker_profile.get('signal_cle', 'Unknown')}\n"
+        user_content += _t(OBS["known_baseline"], locale).format(v=speaker_profile.get('signal_cle', 'Unknown'))
         fears = speaker_profile.get("fears", "[]")
         if isinstance(fears, str):
             fears = json.loads(fears)
         needs = speaker_profile.get("needs", "[]")
         if isinstance(needs, str):
             needs = json.loads(needs)
-        user_content += f"**Known fears:** {', '.join(fears)}\n"
-        user_content += f"**Known needs:** {', '.join(needs)}\n\n"
+        user_content += _t(OBS["known_fears"], locale).format(v=', '.join(fears))
+        user_content += _t(OBS["known_needs"], locale).format(v=', '.join(needs))
 
-    user_content += f"## Statement:\n{turn_content}"
+    user_content += _t(OBS["statement"], locale).format(v=turn_content)
 
     if agenda_items:
         agenda_json = json.dumps(
             [{"key": a["key"], "label": a["label"]} for a in agenda_items]
         )
         user_content += (
-            f"\n\n## Agenda Items\n{agenda_json}\n\n"
-            "For EACH agenda item, infer the speaker's current stance based on their statement."
+            f"\n\n{_t(OBS['agenda_items'], locale)}\n{agenda_json}\n\n"
+            f"{_t(OBS['agenda_infer'], locale)}"
         )
 
+    system_prompt = _t(OBSERVER_SYSTEM_PROMPT_I18N, locale)
     messages = [
-        {"role": "system", "content": OBSERVER_SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_content},
     ]
 

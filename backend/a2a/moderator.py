@@ -14,36 +14,9 @@ import logging
 from typing import Optional
 
 from .llm_client import get_completion_content
+from .prompt_lang import _t, MOD_SYSTEM_PROMPT, MOD
 
 logger = logging.getLogger(__name__)
-
-
-MODERATOR_SYSTEM_PROMPT = """You are the Moderator of a stakeholder wargame simulation.
-
-## YOUR ROLE
-- You control the flow of a moderated debate among organizational stakeholders.
-- You are neutral but rigorous. You probe weak arguments and demand specifics.
-- You ensure all voices are heard, especially dissenting ones.
-
-## YOUR RESPONSIBILITIES
-1. FRAME each round with a clear question or subtopic.
-2. SELECT which stakeholders should respond (based on relevance and equity).
-3. CHALLENGE weak arguments — ask "How specifically?" or "What evidence supports that?"
-4. FORCE contrarian speakers when consensus is premature (consensus > 0.75).
-5. SYNTHESIZE each round — summarize agreements, disagreements, and unresolved tensions.
-
-## POWER DYNAMICS
-{power_dynamics}
-
-## ANTI-GROUPTHINK RULES
-- If consensus appears too quick, FORCE the most dissenting agent to speak.
-- If an agent drifts from their known position, call them out: "Earlier you said X, now you seem to agree. What changed?"
-- Never let a round end with false harmony. Name the tensions.
-
-## FORMAT
-Respond in 2-3 paragraphs. Be direct. Name specific stakeholders.
-When selecting speakers, list them by name.
-"""
 
 
 def build_moderator_prompt(
@@ -53,6 +26,7 @@ def build_moderator_prompt(
     moderator_title: str = "",
     moderator_mandate: str = "",
     moderator_persona_prompt: str = "",
+    locale: str = "en",
 ) -> str:
     """Build the Moderator's system prompt with power dynamics context."""
 
@@ -70,35 +44,41 @@ def build_moderator_prompt(
 
     power_dynamics = "\n".join(power_lines)
     if highest and lowest:
-        power_dynamics += (
-            f"\n\nWhen {highest['name']} speaks, the room pays attention. "
-            f"When {lowest['name']} speaks, others may interrupt or dismiss."
+        power_dynamics += _t(MOD["power_attention"], locale).format(
+            high=highest["name"], low=lowest["name"]
         )
 
     # Build identity line
-    identity = f"You are {moderator_name}"
+    identity_en = f"You are {moderator_name}"
+    identity_zh = f"你是{moderator_name}"
     if moderator_title:
-        identity += f", {moderator_title}"
-    identity += "."
+        identity_en += f", {moderator_title}"
+        identity_zh += f"，{moderator_title}"
+    identity_en += "."
+    identity_zh += "。"
 
     # Replace the identity line in the system prompt
-    prompt = MODERATOR_SYSTEM_PROMPT.replace("You are the Moderator of a stakeholder wargame simulation.", identity)
-    prompt = prompt.format(power_dynamics=power_dynamics)
+    base = _t(MOD_SYSTEM_PROMPT, locale)
+    if locale == "zh":
+        base = base.replace("你是一场利益相关者兵棋推演模拟的主持人。", identity_zh)
+    else:
+        base = base.replace("You are the Moderator of a stakeholder wargame simulation.", identity_en)
+    prompt = base.format(power_dynamics=power_dynamics)
 
     # Add mandate section if provided
     if moderator_mandate:
-        prompt += f"\n\n## YOUR MANDATE\n{moderator_mandate}"
+        prompt += f"\n\n{_t(MOD['your_mandate'], locale)}\n{moderator_mandate}"
 
     # Style modifiers
     style_instructions = ""
     if moderator_style == "challenging":
-        style_instructions = "\nYou are particularly CHALLENGING. Push back hard on vague claims. Demand evidence."
+        style_instructions = _t(MOD["style_challenging"], locale)
     elif moderator_style == "facilitative":
-        style_instructions = "\nYou are FACILITATIVE. Help agents find common ground. Reframe conflicts as shared problems."
+        style_instructions = _t(MOD["style_facilitative"], locale)
     elif moderator_style == "socratic":
-        style_instructions = "\nYou ONLY ask questions. Never make statements. Every response is a Socratic question that exposes logical gaps."
+        style_instructions = _t(MOD["style_socratic"], locale)
     elif moderator_style == "devil's_advocate":
-        style_instructions = "\nYou always argue the OPPOSITE of the emerging consensus. If everyone agrees, you find the strongest counter-argument."
+        style_instructions = _t(MOD["style_devils_advocate"], locale)
 
     prompt += style_instructions
 
@@ -124,6 +104,7 @@ async def moderator_intro(
     moderator_mandate: str = "",
     moderator_persona_prompt: str = "",
     prior_session_context: Optional[str] = None,
+    locale: str = "en",
 ) -> str:
     """Generate the Moderator's round-opening framing."""
 
@@ -131,33 +112,29 @@ async def moderator_intro(
         stakeholders, moderator_style,
         moderator_name=moderator_name, moderator_title=moderator_title,
         moderator_mandate=moderator_mandate, moderator_persona_prompt=moderator_persona_prompt,
+        locale=locale,
     )
 
-    user_content = f"## ROUND {round_num}\n\nStrategic question: {question}\n\n"
+    user_content = _t(MOD["round_header"], locale).format(n=round_num, q=question)
 
     # Inject cross-session context on the first round (Task 3)
     if round_num == 1 and prior_session_context:
-        user_content += (
-            f"## CONTEXT FROM PRIOR SESSIONS\n{prior_session_context}\n\n"
-            "Build on these prior deliberations. Reference specific agreements or "
-            "tensions from earlier sessions.\n\n"
-        )
+        user_content += _t(MOD["prior_sessions"], locale).format(ctx=prior_session_context)
 
     if round_num == 1:
         names = ", ".join(s["name"] for s in stakeholders)
-        user_content += f"This is the opening round. Participants: {names}.\n"
-        user_content += "Frame the question, set the stakes, and select 2-3 stakeholders to respond first."
+        user_content += _t(MOD["opening_round"], locale).format(names=names)
     else:
         if prior_synthesis:
-            user_content += f"## Previous round summary:\n{prior_synthesis}\n\n"
+            user_content += _t(MOD["prev_summary"], locale).format(s=prior_synthesis)
         if analytics_context:
             consensus = analytics_context.get("consensus_score")
             if consensus is not None:
-                user_content += f"Current consensus score: {consensus:.2f}/1.0\n"
+                user_content += _t(MOD["consensus_score"], locale).format(v=consensus)
             risks = analytics_context.get("top_risks", [])
             if risks:
-                user_content += "Highest risk agents: " + ", ".join(risks) + "\n"
-        user_content += "\nBuild on the prior round. Challenge positions that seem to have softened without justification. Select who speaks next."
+                user_content += _t(MOD["highest_risk"], locale) + ", ".join(risks) + "\n"
+        user_content += _t(MOD["build_on_prior"], locale)
 
     messages = [
         {"role": "system", "content": system},
@@ -186,6 +163,7 @@ async def moderator_challenge(
     moderator_title: str = "",
     moderator_mandate: str = "",
     moderator_persona_prompt: str = "",
+    locale: str = "en",
 ) -> str:
     """Generate a mid-round challenge from the Moderator."""
 
@@ -193,19 +171,20 @@ async def moderator_challenge(
         stakeholders, moderator_style,
         moderator_name=moderator_name, moderator_title=moderator_title,
         moderator_mandate=moderator_mandate, moderator_persona_prompt=moderator_persona_prompt,
+        locale=locale,
     )
 
     # Build transcript context
     transcript_text = _format_transcript(transcript[-10:])  # last 10 turns max
 
-    user_content = f"## MODERATOR CHALLENGE\n\nRecent debate:\n{transcript_text}\n\n"
+    user_content = _t(MOD["challenge_header"], locale).format(t=transcript_text)
 
     if analytics_context:
         consensus = analytics_context.get("consensus_score")
         if consensus and consensus > 0.75:
-            user_content += "WARNING: Consensus is very high (>0.75). Force a contrarian perspective.\n"
+            user_content += _t(MOD["consensus_warning"], locale)
 
-    user_content += "Probe the weakest arguments. Challenge any agent who seems to be drifting or agreeing too easily. Be specific."
+    user_content += _t(MOD["probe_weakest"], locale)
 
     messages = [
         {"role": "system", "content": system},
@@ -235,6 +214,7 @@ async def moderator_synthesis(
     moderator_title: str = "",
     moderator_mandate: str = "",
     moderator_persona_prompt: str = "",
+    locale: str = "en",
 ) -> str:
     """Generate the Moderator's round-end synthesis."""
 
@@ -242,27 +222,17 @@ async def moderator_synthesis(
         stakeholders, moderator_style,
         moderator_name=moderator_name, moderator_title=moderator_title,
         moderator_mandate=moderator_mandate, moderator_persona_prompt=moderator_persona_prompt,
+        locale=locale,
     )
 
     transcript_text = _format_transcript(transcript)
 
-    user_content = f"## ROUND {round_num} SYNTHESIS\n\nFull round transcript:\n{transcript_text}\n\n"
+    user_content = _t(MOD["synthesis_header"], locale).format(n=round_num, t=transcript_text)
 
     if is_final:
-        user_content += (
-            "This is the FINAL round. Provide a comprehensive synthesis:\n"
-            "1. Key agreements reached\n"
-            "2. Persistent disagreements\n"
-            "3. Unresolved tensions\n"
-            "4. Recommendations for the consultant\n"
-        )
+        user_content += _t(MOD["final_synthesis"], locale)
     else:
-        user_content += (
-            "Summarize this round:\n"
-            "1. What was agreed?\n"
-            "2. What remains contested?\n"
-            "3. What should the next round focus on?\n"
-        )
+        user_content += _t(MOD["round_synthesis"], locale)
 
     messages = [
         {"role": "system", "content": system},

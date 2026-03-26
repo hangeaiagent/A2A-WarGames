@@ -26,7 +26,7 @@ import api from '../api/client'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const sessionStore = useSessionStore()
 const projectStore = useProjectStore()
 const settingsStore = useSettingsStore()
@@ -234,6 +234,7 @@ async function handleStart() {
       private_thread_depth: config.value.private_thread_depth,
       private_thread_quota_mode: config.value.private_thread_quota_mode,
       context_window_strategy: config.value.context_window_strategy,  // #200: forward strategy to backend
+      locale: locale.value,  // pass UI language to backend for prompt localization
     })
 
     // Attach SSE listeners to the new EventSource

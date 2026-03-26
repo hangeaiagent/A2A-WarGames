@@ -67,6 +67,7 @@ class A2AEngine:
         anti_groupthink: bool = True,
         project_id: Optional[int] = None,
         skip_observer: bool = False,
+        locale: str = "en",
     ):
         self.session_id = session_id
         self.project_id = project_id  # CR-010: needed for memory scoping
@@ -99,6 +100,9 @@ class A2AEngine:
 
         # Cross-session context (Task 3)
         self.prior_session_context = prior_session_context
+
+        # Locale for prompt language (en/zh)
+        self.locale = locale
 
         # Feature flags (from LLMSettings).
         # Recognised keys (all default to False unless noted):
@@ -184,7 +188,7 @@ class A2AEngine:
             if s.get("system_prompt"):
                 self._system_prompts[s["slug"]] = s["system_prompt"]
             else:
-                self._system_prompts[s["slug"]] = compile_persona_prompt(s, project)
+                self._system_prompts[s["slug"]] = compile_persona_prompt(s, project, locale=self.locale)
 
 
     # ------------------------------------------------------------------
@@ -232,6 +236,7 @@ class A2AEngine:
             "moderator_title": self.moderator_title,
             "moderator_mandate": self.moderator_mandate,
             "moderator_persona_prompt": self.moderator_persona_prompt,
+            "locale": self.locale,
         }
 
     def _should_challenge(self, round_num: int, agent_turns_this_round: int, is_last_agent: bool, analytics_ctx: Optional[dict] = None) -> bool:
@@ -827,7 +832,7 @@ class A2AEngine:
         # Re-inject persona every 3 turns
         total_agent_turns = self.turns_spoken.get(slug, 0)
         if total_agent_turns > 0 and total_agent_turns % 3 == 0:
-            reminder = compile_reinject_reminder(speaker)
+            reminder = compile_reinject_reminder(speaker, locale=self.locale)
             system_prompt = reminder + "\n\n" + system_prompt
 
         # Token budget — all agents get substantial tokens (CR-004 §1)
@@ -1150,6 +1155,7 @@ class A2AEngine:
                 turn_content=content, round_num=round_num, turn_num=turn_num,
                 speaker_profile=speaker,
                 agenda_items=self.agenda_items if self.agenda_items else None,
+                locale=self.locale,
             )
             self.observer_data.append(observer_result)
 

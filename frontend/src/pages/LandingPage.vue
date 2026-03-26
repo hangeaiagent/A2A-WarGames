@@ -6,48 +6,45 @@
         <div class="hero-content">
           <div class="hero-badge">
             <span class="badge-icon">🤖</span>
-            <span>A2A Protocol Research Platform</span>
+            <span>{{ t('landing.badge') }}</span>
           </div>
           <h1 class="hero-title">
-            Multi-Agent Debate
-            <span class="gradient-text">Simulation</span>
+            {{ t('landing.heroTitle1') }}
+            <span class="gradient-text">{{ t('landing.heroTitle2') }}</span>
           </h1>
-          <p class="hero-subtitle">
-            Watch autonomous LLM agents negotiate, challenge, and reach consensus in structured debates.
-            Each stakeholder is an independent agent with its own persona, cognitive biases, and strategic constraints.
-          </p>
+          <p class="hero-subtitle">{{ t('landing.heroSubtitle') }}</p>
           <div class="hero-cta">
             <button class="btn btn-primary" @click="goToProjects">
-              <span>Launch Simulation</span>
+              <span>{{ t('landing.launchSimulation') }}</span>
               <span class="btn-icon">→</span>
             </button>
             <button class="btn btn-accent" @click="tryDemo">
-              <span>🎮 Try Demo</span>
+              <span>{{ t('landing.tryDemo') }}</span>
             </button>
             <a href="https://github.com/ArtemisAI/A2A-WarGames" target="_blank" class="btn btn-secondary">
               <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
               </svg>
-              <span>View on GitHub</span>
+              <span>{{ t('landing.viewOnGitHub') }}</span>
             </a>
           </div>
         </div>
         <div class="hero-visual">
           <div class="floating-card card-1">
             <div class="card-icon">💬</div>
-            <div class="card-text">Autonomous Agents</div>
+            <div class="card-text">{{ t('landing.autonomousAgents') }}</div>
           </div>
           <div class="floating-card card-2">
             <div class="card-icon">🎯</div>
-            <div class="card-text">Strategic Constraints</div>
+            <div class="card-text">{{ t('landing.strategicConstraints') }}</div>
           </div>
           <div class="floating-card card-3">
             <div class="card-icon">🧠</div>
-            <div class="card-text">Cognitive Biases</div>
+            <div class="card-text">{{ t('landing.cognitiveBiases') }}</div>
           </div>
           <div class="floating-card card-4">
             <div class="card-icon">⚖️</div>
-            <div class="card-text">Consensus Analysis</div>
+            <div class="card-text">{{ t('landing.consensusAnalysis') }}</div>
           </div>
         </div>
       </div>
@@ -57,58 +54,56 @@
     <section class="protocol-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">The A2A Protocol</h2>
-          <p class="section-subtitle">
-            Agent-to-Agent structured communication for multi-stakeholder negotiation scenarios
-          </p>
+          <h2 class="section-title">{{ t('landing.a2aProtocol') }}</h2>
+          <p class="section-subtitle">{{ t('landing.a2aProtocolDesc') }}</p>
         </div>
         <div class="protocol-content">
           <div class="protocol-diagram">
             <div class="diagram-node moderator">
               <div class="node-icon">👔</div>
-              <div class="node-label">Moderator Agent</div>
-              <div class="node-desc">Frames rounds, challenges weak arguments</div>
+              <div class="node-label">{{ t('landing.moderatorAgent') }}</div>
+              <div class="node-desc">{{ t('landing.moderatorAgentDesc') }}</div>
             </div>
             <div class="diagram-arrow">↓</div>
             <div class="diagram-node selection">
               <div class="node-icon">🎲</div>
-              <div class="node-label">Speaker Selection</div>
-              <div class="node-desc">Influence-weighted agent selection</div>
+              <div class="node-label">{{ t('landing.speakerSelection') }}</div>
+              <div class="node-desc">{{ t('landing.speakerSelectionDesc') }}</div>
             </div>
             <div class="diagram-arrow">↓</div>
             <div class="diagram-node agents">
               <div class="node-icon">👥</div>
-              <div class="node-label">Stakeholder Agents</div>
-              <div class="node-desc">Independent LLM agents with personas</div>
+              <div class="node-label">{{ t('landing.stakeholderAgents') }}</div>
+              <div class="node-desc">{{ t('landing.stakeholderAgentsDesc') }}</div>
             </div>
             <div class="diagram-arrow">↓</div>
             <div class="diagram-node observer">
               <div class="node-icon">📊</div>
-              <div class="node-label">Observer</div>
-              <div class="node-desc">Sentiment, stance, risk extraction</div>
+              <div class="node-label">{{ t('landing.observer') }}</div>
+              <div class="node-desc">{{ t('landing.observerDesc') }}</div>
             </div>
             <div class="diagram-arrow">↓</div>
             <div class="diagram-node analytics">
               <div class="node-icon">📈</div>
-              <div class="node-label">Analytics</div>
-              <div class="node-desc">Consensus, coalitions, influence map</div>
+              <div class="node-label">{{ t('landing.analytics') }}</div>
+              <div class="node-desc">{{ t('landing.analyticsDesc') }}</div>
             </div>
           </div>
           <div class="protocol-features">
             <div class="feature-card">
               <div class="feature-icon">🎭</div>
-              <h3>Rich Personas</h3>
-              <p>Each agent has cognitive biases, BATNA, hard constraints, and anti-sycophancy directives</p>
+              <h3>{{ t('landing.richPersonas') }}</h3>
+              <p>{{ t('landing.richPersonasDesc') }}</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🔄</div>
-              <h3>Structured Rounds</h3>
-              <p>Moderator-led debate flow with intro, challenges, and synthesis phases</p>
+              <h3>{{ t('landing.structuredRounds') }}</h3>
+              <p>{{ t('landing.structuredRoundsDesc') }}</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">📡</div>
-              <h3>Real-time Streaming</h3>
-              <p>Server-Sent Events (SSE) stream debate progress live to the UI</p>
+              <h3>{{ t('landing.realtimeStreaming') }}</h3>
+              <p>{{ t('landing.realtimeStreamingDesc') }}</p>
             </div>
           </div>
         </div>
@@ -119,51 +114,49 @@
     <section class="features-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Key Capabilities</h2>
-          <p class="section-subtitle">
-            Enterprise-grade simulation engine for complex stakeholder dynamics
-          </p>
+          <h2 class="section-title">{{ t('landing.keyCapabilities') }}</h2>
+          <p class="section-subtitle">{{ t('landing.keyCapabilitiesDesc') }}</p>
         </div>
         <div class="features-grid">
           <div class="feature-item">
             <div class="feature-item-icon">🎯</div>
-            <h3>Multi-Agent Orchestration</h3>
-            <p>A2AEngine coordinates 7+ autonomous agents with independent reasoning and strategic constraints</p>
+            <h3>{{ t('landing.multiAgentOrchestration') }}</h3>
+            <p>{{ t('landing.multiAgentOrchestrationDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">🧬</div>
-            <h3>ADKAR Change Modeling</h3>
-            <p>Each agent has awareness, desire, knowledge, ability, and reinforcement state tracking</p>
+            <h3>{{ t('landing.adkarModeling') }}</h3>
+            <p>{{ t('landing.adkarModelingDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">💭</div>
-            <h3>Whisper Channels</h3>
-            <p>Private agent-to-agent threads for bilateral exchange separate from public debate</p>
+            <h3>{{ t('landing.whisperChannels') }}</h3>
+            <p>{{ t('landing.whisperChannelsDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">🧠</div>
-            <h3>Agent Memory</h3>
-            <p>pgvector + S-BERT semantic retrieval with memory decay and cross-session promotion</p>
+            <h3>{{ t('landing.agentMemory') }}</h3>
+            <p>{{ t('landing.agentMemoryDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">📊</div>
-            <h3>Live Analytics</h3>
-            <p>Consensus score, coalition detection, influence mapping, and risk flags in real-time</p>
+            <h3>{{ t('landing.liveAnalytics') }}</h3>
+            <p>{{ t('landing.liveAnalyticsDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">🎨</div>
-            <h3>DAG Visualization</h3>
-            <p>D3.js force-directed graph showing agreement/disagreement relationships between agents</p>
+            <h3>{{ t('landing.dagVisualization') }}</h3>
+            <p>{{ t('landing.dagVisualizationDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">🔐</div>
-            <h3>Multi-tenant Security</h3>
-            <p>Supabase RLS policies ensure each user sees only their own projects and simulations</p>
+            <h3>{{ t('landing.multiTenantSecurity') }}</h3>
+            <p>{{ t('landing.multiTenantSecurityDesc') }}</p>
           </div>
           <div class="feature-item">
             <div class="feature-item-icon">🌐</div>
-            <h3>i18n Support</h3>
-            <p>English, French, and Spanish locales with vue-i18n for global accessibility</p>
+            <h3>{{ t('landing.i18nSupport') }}</h3>
+            <p>{{ t('landing.i18nSupportDesc') }}</p>
           </div>
         </div>
       </div>
@@ -173,81 +166,79 @@
     <section class="tech-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Modern Tech Stack</h2>
-          <p class="section-subtitle">
-            Built with production-ready frameworks and best practices
-          </p>
+          <h2 class="section-title">{{ t('landing.modernTechStack') }}</h2>
+          <p class="section-subtitle">{{ t('landing.modernTechStackDesc') }}</p>
         </div>
         <div class="tech-grid">
           <div class="tech-category">
-            <h3 class="tech-category-title">Frontend</h3>
+            <h3 class="tech-category-title">{{ t('landing.frontend') }}</h3>
             <div class="tech-items">
               <div class="tech-item">
                 <span class="tech-icon">⚡</span>
                 <div>
                   <div class="tech-name">Vue 3</div>
-                  <div class="tech-desc">Composition API + script setup</div>
+                  <div class="tech-desc">{{ t('landing.vue3Desc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">🎨</span>
                 <div>
                   <div class="tech-name">Tailwind CSS v4</div>
-                  <div class="tech-desc">Utility-first styling</div>
+                  <div class="tech-desc">{{ t('landing.tailwindDesc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">🏪</span>
                 <div>
                   <div class="tech-name">Pinia</div>
-                  <div class="tech-desc">State management</div>
+                  <div class="tech-desc">{{ t('landing.piniaDesc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">📊</span>
                 <div>
                   <div class="tech-name">Chart.js + D3.js</div>
-                  <div class="tech-desc">Data visualization</div>
+                  <div class="tech-desc">{{ t('landing.chartDesc') }}</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="tech-category">
-            <h3 class="tech-category-title">Backend</h3>
+            <h3 class="tech-category-title">{{ t('landing.backend') }}</h3>
             <div class="tech-items">
               <div class="tech-item">
                 <span class="tech-icon">⚙️</span>
                 <div>
                   <div class="tech-name">FastAPI</div>
-                  <div class="tech-desc">High-performance async API</div>
+                  <div class="tech-desc">{{ t('landing.fastapiDesc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">🗄️</span>
                 <div>
                   <div class="tech-name">PostgreSQL + Supabase</div>
-                  <div class="tech-desc">Production database with RLS</div>
+                  <div class="tech-desc">{{ t('landing.postgresDesc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">🔍</span>
                 <div>
                   <div class="tech-name">pgvector</div>
-                  <div class="tech-desc">Semantic memory retrieval</div>
+                  <div class="tech-desc">{{ t('landing.pgvectorDesc') }}</div>
                 </div>
               </div>
               <div class="tech-item">
                 <span class="tech-icon">🤖</span>
                 <div>
                   <div class="tech-name">OpenAI-compatible</div>
-                  <div class="tech-desc">Any LLM provider</div>
+                  <div class="tech-desc">{{ t('landing.openaiCompatDesc') }}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="llm-compat">
-          <h3 class="llm-compat-title">LLM Compatibility</h3>
+          <h3 class="llm-compat-title">{{ t('landing.llmCompatibility') }}</h3>
           <div class="llm-providers">
             <span class="llm-badge">OpenAI</span>
             <span class="llm-badge">Anthropic</span>
@@ -264,17 +255,15 @@
     <section class="cta-section">
       <div class="container">
         <div class="cta-content">
-          <h2 class="cta-title">Ready to Explore?</h2>
-          <p class="cta-subtitle">
-            Start simulating multi-agent debates in minutes. Try the Northbridge demo scenario with 5 pre-configured stakeholders.
-          </p>
+          <h2 class="cta-title">{{ t('landing.readyToExplore') }}</h2>
+          <p class="cta-subtitle">{{ t('landing.readyToExploreDesc') }}</p>
           <div class="cta-buttons">
             <button class="btn btn-primary btn-lg" @click="goToProjects">
-              <span>Launch Demo</span>
+              <span>{{ t('landing.launchDemo') }}</span>
               <span class="btn-icon">→</span>
             </button>
             <a href="https://github.com/ArtemisAI/A2A-WarGames" target="_blank" class="btn btn-outline btn-lg">
-              <span>Read the Docs</span>
+              <span>{{ t('landing.readTheDocs') }}</span>
             </a>
           </div>
         </div>
@@ -286,8 +275,8 @@
       <div class="container">
         <div class="footer-content">
           <div class="footer-info">
-            <div class="footer-logo">A2A War Games</div>
-            <p class="footer-desc">Multi-agent debate simulation platform</p>
+            <div class="footer-logo">{{ t('app.brandName') }}</div>
+            <p class="footer-desc">{{ t('landing.footerDesc') }}</p>
           </div>
           <div class="footer-links">
             <a href="https://github.com/ArtemisAI/A2A-WarGames" target="_blank">GitHub</a>
@@ -296,7 +285,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>© 2026 ArtemisAI — MIT License</p>
+          <p>{{ t('landing.footerCopyright') }}</p>
         </div>
       </div>
     </footer>
@@ -305,8 +294,10 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import api from '../api/client'
 
+const { t } = useI18n()
 const router = useRouter()
 
 const goToProjects = () => {

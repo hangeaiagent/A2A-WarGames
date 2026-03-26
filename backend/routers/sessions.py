@@ -84,6 +84,8 @@ class RunIn(BaseModel):
     private_thread_quota_mode: str = "fixed"
     # #200/#97: context window strategy for agent turns
     context_window_strategy: str = "last_2_rounds"  # "last_2_rounds" | "full" | "synthesis_only"
+    # Locale for prompt language
+    locale: str = "en"  # "en" | "zh"
 
 class InjectIn(BaseModel):
     content: str = Field(..., min_length=1, max_length=4000)  # #159: prevent context overflow
@@ -511,6 +513,7 @@ def run_session(
         prior_session_context=prior_session_context,
         feature_flags=llm.feature_flags_dict,
         project_id=session.project_id,
+        locale=payload.locale,
     )
     engine.user_id = user_id
     engine.council_models = llm.council_models_list  # model fallback chain

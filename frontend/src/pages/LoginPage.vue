@@ -1,39 +1,48 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 
-const email = ref('')
-const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
-async function submitEmail() {
-  if (!email.value.trim() || !password.value) return
-  loading.value = true
-  error.value = ''
-  try {
-    await auth.signInWithEmail(email.value.trim(), password.value)
-    router.push('/projects')
-  } catch (err) {
-    error.value = err.message || t('login.signInFailed')
-  } finally {
-    loading.value = false
+onMounted(async () => {
+  const code = route.query.code
+  if (code) {
+    loading.value = true
+    error.value = ''
+    try {
+      await auth.loginWithAgentPitOAuth(code)
+      router.replace('/projects')
+    } catch (err) {
+      error.value = err.message || t('login.agentPitLoginFailed')
+    } finally {
+      loading.value = false
+    }
   }
-}
+})
 
-async function signInGitHub() {
+async function signInAgentPit() {
   loading.value = true
   error.value = ''
   try {
-    await auth.signInWithGitHub()
+    const resp = await fetch('/api/auth/agentpit-oauth-config')
+    if (!resp.ok) throw new Error(t('login.agentPitOAuthNotAvailable'))
+    const { authorize_url, client_id, redirect_uri } = await resp.json()
+    const url = new URL(authorize_url)
+    url.searchParams.set('client_id', client_id)
+    url.searchParams.set('redirect_uri', redirect_uri)
+    url.searchParams.set('response_type', 'code')
+    url.searchParams.set('scope', 'openid profile email')
+    window.location.href = url.toString()
   } catch (err) {
-    error.value = err.message || t('login.oauthFailed')
+    error.value = err.message || t('login.agentPitLoginFailed')
     loading.value = false
   }
 }
@@ -50,47 +59,16 @@ async function signInGitHub() {
       <h1 class="login-title">{{ t('login.title') }}</h1>
       <p class="login-subtitle">{{ t('login.subtitle') }}</p>
 
-      <div class="oauth-buttons">
-        <button class="btn-oauth btn-github" @click="signInGitHub" :disabled="loading">
-          <svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-          </svg>
-          {{ t('login.continueWithGitHub') }}
-        </button>
-      </div>
+      <p v-if="error" class="form-error">{{ error }}</p>
 
-      <div class="divider"><span>{{ t('login.orSignInWithEmail') }}</span></div>
-
-      <form class="email-form" @submit.prevent="submitEmail">
-        <label class="form-label" for="login-email">{{ t('login.email') }}</label>
-        <input
-          id="login-email"
-          class="form-input"
-          type="email"
-          placeholder="you@example.com"
-          v-model="email"
-          :disabled="loading"
-          required
-        />
-        <label class="form-label" for="login-password" style="margin-top: 10px;">{{ t('login.password') }}</label>
-        <input
-          id="login-password"
-          class="form-input"
-          type="password"
-          placeholder="••••••••"
-          v-model="password"
-          :disabled="loading"
-          required
-        />
-        <p v-if="error" class="form-error">{{ error }}</p>
-        <button
-          type="submit"
-          class="btn btn-primary submit-btn"
-          :disabled="loading || !email.trim() || !password"
-        >
-          {{ loading ? t('login.signingIn') : t('login.title') }}
-        </button>
-      </form>
+      <button class="btn-agentpit" @click="signInAgentPit" :disabled="loading">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        {{ loading ? t('login.signingIn') : t('login.continueWithAgentPit') }}
+      </button>
     </div>
   </div>
 </template>
@@ -114,7 +92,6 @@ async function signInGitHub() {
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .login-logo {
@@ -150,98 +127,41 @@ async function signInGitHub() {
   margin: 0 0 28px 0;
 }
 
-.oauth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.btn-oauth {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  transition: background 0.15s, border-color 0.15s;
-  width: 100%;
-}
-
-.btn-github {
-  background: #161b22;
-  color: #e6edf3;
-  border-color: #30363d;
-}
-
-.btn-github:hover:not(:disabled) {
-  background: #1c2128;
-  border-color: #58a6ff;
-}
-
-.oauth-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--text-muted);
-  font-size: 12px;
-  margin: 4px 0 20px;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.email-form {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.form-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 8px 12px;
-  background: var(--surface-alt, var(--surface));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
 .form-error {
   font-size: 12px;
   color: var(--danger, #f85149);
-  margin: 4px 0 0;
+  margin: 0 0 12px 0;
 }
 
-.submit-btn {
-  margin-top: 12px;
-  width: 100%;
+.btn-agentpit {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-agentpit:hover:not(:disabled) {
+  background: #6d28d9;
+}
+
+.btn-agentpit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 </style>
