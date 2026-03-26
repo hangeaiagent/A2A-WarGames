@@ -22,7 +22,8 @@
   "language": {
     "en": "English",
     "fr": "Français",
-    "es": "Español"
+    "es": "Español",
+    "zh": "中文"
   },
   "login": {
     "title": "Se connecter",
@@ -553,7 +554,8 @@
     "loading": "Chargement…",
     "english": "English",
     "french": "Français",
-    "spanish": "Español"
+    "spanish": "Español",
+    "chinese": "中文"
   },
   "guest": {
     "signInToCreate": "Connectez-vous pour créer des projets",

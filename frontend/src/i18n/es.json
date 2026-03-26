@@ -22,7 +22,8 @@
   "language": {
     "en": "English",
     "fr": "Français",
-    "es": "Español"
+    "es": "Español",
+    "zh": "中文"
   },
   "login": {
     "title": "Iniciar sesión",
@@ -553,7 +554,8 @@
     "loading": "Cargando…",
     "english": "English",
     "french": "Français",
-    "spanish": "Español"
+    "spanish": "Español",
+    "chinese": "中文"
   },
   "guest": {
     "signInToCreate": "Inicia sesión para crear proyectos",

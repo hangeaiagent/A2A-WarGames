@@ -452,6 +452,8 @@ function changeLocale(lang) {
                 <option value="auto">{{ t('settings.auto') }}</option>
                 <option value="en">English</option>
                 <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="zh">中文</option>
               </select>
             </div>
           </template>
@@ -474,6 +476,8 @@ function changeLocale(lang) {
                 <option value="auto">{{ t('settings.autoDetect') }}</option>
                 <option value="en">English</option>
                 <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="zh">中文</option>
               </select>
             </div>
             <div class="form-group" style="display: flex; align-items: center; gap: 12px;">

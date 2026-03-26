@@ -14,6 +14,7 @@ const props = defineProps({
   isGuest: Boolean,
   displayName: String,
   avatarUrl: String,
+  email: String,
 })
 const emit = defineEmits(['toggle-theme', 'change-locale', 'sign-out', 'sign-in'])
 
@@ -40,6 +41,7 @@ const dropdownOpen = ref(false)
         <option value="en">EN</option>
         <option value="fr">FR</option>
         <option value="es">ES</option>
+        <option value="zh">中文</option>
       </select>
 
       <!-- Animated theme toggle -->
@@ -73,6 +75,7 @@ const dropdownOpen = ref(false)
         :is-authenticated="isAuthenticated"
         :display-name="displayName"
         :avatar-url="avatarUrl"
+        :email="email"
         v-model:dropdown-open="dropdownOpen"
         @sign-out="emit('sign-out')"
         @sign-in="emit('sign-in')"
