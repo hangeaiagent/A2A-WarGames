@@ -637,12 +637,14 @@
   "tokenUsage": {
     "title": "Consumo de tokens",
     "subtitle": "Monitorea tu consumo de tokens LLM",
-    "totalTokens": "Total de tokens",
-    "promptTokens": "Tokens de prompt",
-    "completionTokens": "Tokens de completado",
+    "totalMessages": "Total de mensajes",
     "sessionCount": "Sesiones",
+    "completedSessions": "Completadas",
+    "runningSessions": "En curso",
     "bySession": "Uso por sesión",
     "session": "Sesión",
+    "status": "Estado",
+    "messages": "Mensajes",
     "date": "Fecha",
     "noData": "Sin datos de consumo aún. Ejecuta una sesión para ver los resultados aquí."
   },

@@ -637,14 +637,16 @@
   "tokenUsage": {
     "title": "Token 消耗",
     "subtitle": "查看您的 LLM Token 使用情况",
-    "totalTokens": "总 Token 数",
-    "promptTokens": "提示 Token",
-    "completionTokens": "生成 Token",
+    "totalMessages": "总消息数",
     "sessionCount": "会话数",
+    "completedSessions": "已完成",
+    "runningSessions": "进行中",
     "bySession": "按会话明细",
     "session": "会话",
+    "status": "状态",
+    "messages": "消息数",
     "date": "日期",
-    "noData": "暂无 Token 使用数据。开始一场推演后数据将在此显示。"
+    "noData": "暂无使用数据。开始一场推演后数据将在此显示。"
   },
   "gameHistory": {
     "title": "游戏历史",

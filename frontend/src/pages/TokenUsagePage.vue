@@ -1,23 +1,28 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api/client.js'
 
 const { t } = useI18n()
 const loading = ref(true)
-const usage = ref(null)
+const sessions = ref([])
 const error = ref('')
 
 onMounted(async () => {
   try {
-    const { data } = await api.get('/api/token-usage')
-    usage.value = data
+    const { data } = await api.get('/api/sessions/')
+    sessions.value = data
   } catch (e) {
     error.value = e.response?.data?.detail || e.message
   } finally {
     loading.value = false
   }
 })
+
+const totalMessages = computed(() => sessions.value.reduce((sum, s) => sum + (s.message_count || 0), 0))
+const sessionCount = computed(() => sessions.value.length)
+const completedCount = computed(() => sessions.value.filter(s => s.status === 'complete').length)
+const runningCount = computed(() => sessions.value.filter(s => s.status === 'running').length)
 </script>
 
 <template>
@@ -27,51 +32,49 @@ onMounted(async () => {
 
     <div v-if="loading" class="loading-state">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error-state">{{ error }}</div>
-    <div v-else-if="usage" class="usage-content">
+    <div v-else class="usage-content">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.totalTokens') }}</div>
-          <div class="stat-value">{{ (usage.total_tokens ?? 0).toLocaleString() }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.promptTokens') }}</div>
-          <div class="stat-value">{{ (usage.prompt_tokens ?? 0).toLocaleString() }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.completionTokens') }}</div>
-          <div class="stat-value">{{ (usage.completion_tokens ?? 0).toLocaleString() }}</div>
+          <div class="stat-label">{{ t('tokenUsage.totalMessages') }}</div>
+          <div class="stat-value">{{ totalMessages.toLocaleString() }}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">{{ t('tokenUsage.sessionCount') }}</div>
-          <div class="stat-value">{{ usage.session_count ?? 0 }}</div>
+          <div class="stat-value">{{ sessionCount }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t('tokenUsage.completedSessions') }}</div>
+          <div class="stat-value">{{ completedCount }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t('tokenUsage.runningSessions') }}</div>
+          <div class="stat-value">{{ runningCount }}</div>
         </div>
       </div>
 
-      <div v-if="usage.by_session?.length" class="session-breakdown">
+      <div v-if="sessions.length" class="session-breakdown">
         <h2 class="section-title">{{ t('tokenUsage.bySession') }}</h2>
         <table class="usage-table">
           <thead>
             <tr>
               <th>{{ t('tokenUsage.session') }}</th>
-              <th>{{ t('tokenUsage.promptTokens') }}</th>
-              <th>{{ t('tokenUsage.completionTokens') }}</th>
-              <th>{{ t('tokenUsage.totalTokens') }}</th>
+              <th>{{ t('tokenUsage.status') }}</th>
+              <th>{{ t('tokenUsage.messages') }}</th>
               <th>{{ t('tokenUsage.date') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in usage.by_session" :key="row.session_id">
-              <td>{{ row.title || row.session_id }}</td>
-              <td>{{ (row.prompt_tokens ?? 0).toLocaleString() }}</td>
-              <td>{{ (row.completion_tokens ?? 0).toLocaleString() }}</td>
-              <td>{{ (row.total_tokens ?? 0).toLocaleString() }}</td>
+            <tr v-for="row in sessions" :key="row.id">
+              <td>{{ row.title || row.question || `#${row.id}` }}</td>
+              <td><span class="status-badge" :class="`status-${row.status}`">{{ t(`status.${row.status || 'pending'}`) }}</span></td>
+              <td>{{ row.message_count ?? 0 }}</td>
               <td>{{ row.created_at ? new Date(row.created_at).toLocaleDateString() : '-' }}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div v-if="!usage.by_session?.length" class="empty-state">
+      <div v-else class="empty-state">
         {{ t('tokenUsage.noData') }}
       </div>
     </div>

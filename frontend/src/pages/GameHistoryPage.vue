@@ -12,7 +12,7 @@ const error = ref('')
 
 onMounted(async () => {
   try {
-    const { data } = await api.get('/api/sessions')
+    const { data } = await api.get('/api/sessions/')
     games.value = data
   } catch (e) {
     error.value = e.response?.data?.detail || e.message
@@ -55,7 +55,7 @@ function goToSession(session) {
         </div>
         <div class="game-meta">
           <span v-if="game.project_name" class="meta-item">{{ game.project_name }}</span>
-          <span class="meta-item">{{ t('gameHistory.participants', { count: game.participant_count ?? 0 }) }}</span>
+          <span class="meta-item">{{ t('gameHistory.participants', { count: Array.isArray(game.participants) ? game.participants.length : 0 }) }}</span>
           <span v-if="game.consensus_score != null" class="meta-item">{{ t('gameHistory.consensus') }}: {{ (game.consensus_score * 100).toFixed(0) }}%</span>
           <span class="meta-item">{{ game.created_at ? new Date(game.created_at).toLocaleDateString() : '-' }}</span>
         </div>
