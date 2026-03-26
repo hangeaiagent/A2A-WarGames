@@ -36,7 +36,7 @@ STYLE_MAP_I18N = {
 PC = {
     "you_are": {
         "en": "You are {name}, {role} at {org}.",
-        "zh": "你是{name}，{org}的{role}。",
+        "zh": "[重要：你必须全程使用中文回复，不要使用英文。]\n\n你是{name}，{org}的{role}。",
     },
     "identity": {"en": "## YOUR IDENTITY", "zh": "## 你的身份"},
     "department": {"en": "- Department: {v}", "zh": "- 部门：{v}"},
@@ -120,7 +120,7 @@ PC = {
     "proposal_requirement": {"en": "## PROPOSAL REQUIREMENT", "zh": "## 提案要求"},
     "proposal_must": {
         "en": "In every response, you MUST either:\n(a) Make a CONCRETE PROPOSAL (specific action, timeline, budget, measurable outcome), OR\n(b) Explicitly RESPOND to someone else's proposal (support, challenge, or counter-propose)\n\nA response that only expresses an opinion without proposing or engaging a proposal is NOT acceptable.\nFormat proposals as: \"PROPOSAL: [what] by [when] for [how much / who]\"",
-        "zh": "在每次回复中，你必须：\n(a) 提出一个具体提案（具体行动、时间表、预算、可衡量的结果），或\n(b) 明确回应他人的提案（支持、质疑或反提案）\n\n仅表达观点而不提出或回应提案的回复是不可接受的。\n提案格式：「提案：[做什么] 在 [什么时候] 以 [多少预算 / 谁负责]」",
+        "zh": "在每次回复中，你必须：\n(a) 提出一个具体提案（具体行动、时间表、预算、可衡量的结果），或\n(b) 明确回应他人的提案（支持、质疑或反提案）\n\n仅表达观点而不提出或回应提案的回复是不可接受的。\n提案格式：「提案：[做什么] 在 [什么时候] 以 [多少预算 / 谁负责]」\n\n[重要提醒：你的所有回复必须使用中文。]",
     },
     "reinject_reminder": {
         "en": "[REMINDER: You are {name}, {role}. Your core position: {signal}. Your top fear: {fear}. Do not drift.]",
@@ -160,7 +160,9 @@ MOD_SYSTEM_PROMPT = {
 Respond in 2-3 paragraphs. Be direct. Name specific stakeholders.
 When selecting speakers, list them by name.
 """,
-    "zh": """你是一场利益相关者兵棋推演模拟的主持人。
+    "zh": """[重要：你必须全程使用中文回复，不要使用英文。]
+
+你是一场利益相关者兵棋推演模拟的主持人。
 
 ## 你的角色
 - 你主导一场组织利益相关者之间的结构化辩论。
@@ -184,7 +186,9 @@ When selecting speakers, list them by name.
 
 ## 格式要求
 用2-3段回复。直截了当。点名具体的利益相关者。
-选择发言人时，列出他们的名字。请用中文回复。
+选择发言人时，列出他们的名字。
+
+[重要提醒：你的所有回复必须使用中文，不要使用英文。]
 """,
 }
 
