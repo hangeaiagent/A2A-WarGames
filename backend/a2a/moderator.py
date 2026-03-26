@@ -13,7 +13,7 @@ import json
 import logging
 from typing import Optional
 
-from .llm_client import get_completion_content
+from .llm_client import get_completion_content_with_usage
 from .prompt_lang import _t, MOD_SYSTEM_PROMPT, MOD
 
 logger = logging.getLogger(__name__)
@@ -141,7 +141,7 @@ async def moderator_intro(
         {"role": "user", "content": user_content},
     ]
 
-    return await get_completion_content(
+    return await get_completion_content_with_usage(
         base_url=base_url,
         api_key=api_key,
         model=model,
@@ -191,7 +191,7 @@ async def moderator_challenge(
         {"role": "user", "content": user_content},
     ]
 
-    return await get_completion_content(
+    return await get_completion_content_with_usage(
         base_url=base_url,
         api_key=api_key,
         model=model,
@@ -239,7 +239,7 @@ async def moderator_synthesis(
         {"role": "user", "content": user_content},
     ]
 
-    return await get_completion_content(
+    return await get_completion_content_with_usage(
         base_url=base_url,
         api_key=api_key,
         model=model,

@@ -545,6 +545,46 @@ async def get_completion_content(
     return raw if raw else ""
 
 
+async def get_completion_content_with_usage(
+    base_url: str,
+    api_key: str,
+    model: str,
+    messages: list[dict],
+    temperature: float = 0.7,
+    max_tokens: int = 1024,
+    json_mode: bool = False,
+    agent_name: str = "unknown",
+) -> tuple[str, dict]:
+    """Like get_completion_content but also returns usage dict.
+
+    Returns:
+        (content_string, {"prompt_tokens": int, "completion_tokens": int})
+    """
+    data = await chat_completion(
+        base_url=base_url, api_key=api_key, model=model, messages=messages,
+        temperature=temperature, max_tokens=max_tokens, json_mode=json_mode,
+        agent_name=agent_name,
+    )
+    usage = data.get("usage", {})
+    if data.get("_is_fallback") or data.get("model") == "fallback":
+        choices = data.get("choices") or []
+        content = choices[0]["message"].get("content", "") if choices else ""
+        return content, {"prompt_tokens": 0, "completion_tokens": 0}
+    choices = data.get("choices") or []
+    if not choices:
+        return "", {"prompt_tokens": 0, "completion_tokens": 0}
+    msg = choices[0].get("message", {})
+    raw = msg.get("content", "")
+    if isinstance(raw, list):
+        _, content_text = _extract_thinking_from_response(data, model)
+        raw = content_text or ""
+    if not raw or not raw.strip():
+        reasoning = msg.get("reasoning", "")
+        if reasoning and reasoning.strip():
+            return reasoning, usage
+    return (raw if raw else ""), usage
+
+
 async def get_completion_json(
     base_url: str,
     api_key: str,

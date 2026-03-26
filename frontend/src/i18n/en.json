@@ -637,14 +637,12 @@
   "tokenUsage": {
     "title": "Token Usage",
     "subtitle": "Monitor your LLM token consumption",
-    "totalMessages": "Total Messages",
+    "totalTokens": "Total Tokens",
+    "promptTokens": "Prompt Tokens",
+    "completionTokens": "Completion Tokens",
     "sessionCount": "Sessions",
-    "completedSessions": "Completed",
-    "runningSessions": "Running",
     "bySession": "Usage by Session",
     "session": "Session",
-    "status": "Status",
-    "messages": "Messages",
     "date": "Date",
     "noData": "No usage data yet. Run a wargame session to see usage here."
   },

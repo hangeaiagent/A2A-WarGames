@@ -174,6 +174,10 @@ class A2AEngine:
         # Runtime mute set — slugs in here are skipped by SpeakerSelector (#115)
         self._muted_agents: set = set()
 
+        # Token usage tracking — accumulated across all LLM calls
+        self._total_prompt_tokens: int = 0
+        self._total_completion_tokens: int = 0
+
         # #112: analytics context cache — rebuilt only when observer_data grows
         self._analytics_cache: Optional[dict] = None
         self._analytics_cache_len: int = 0
@@ -228,6 +232,12 @@ class A2AEngine:
             "phase": self._current_phase,
             "speakers_completed": list(self._speakers_completed_this_round),
         }
+
+    def _accumulate_usage(self, usage: dict):
+        """Accumulate token usage from an LLM response."""
+        if usage:
+            self._total_prompt_tokens += usage.get("prompt_tokens", 0)
+            self._total_completion_tokens += usage.get("completion_tokens", 0)
 
     def _moderator_kwargs(self) -> dict:
         """Common moderator persona keyword arguments."""
@@ -357,7 +367,7 @@ class A2AEngine:
                     # Clear so subsequent rounds always call the LLM (they have prior synthesis)
                     self._pre_warmed_moderator_opening = None
                 else:
-                    mod_content = await moderator_intro(
+                    mod_content, mod_usage = await moderator_intro(
                         base_url=self.base_url,
                         api_key=self.api_key,
                         model=self.chairman_model,
@@ -370,6 +380,7 @@ class A2AEngine:
                         prior_session_context=self.prior_session_context if round_num == start_round else None,
                         **self._moderator_kwargs(),
                     )
+                    self._accumulate_usage(mod_usage)
 
                 self.turn_counter += 1
                 mod_msg = self._make_message("moderator", self.moderator_name, mod_content, round_num, stage="intro")
@@ -467,7 +478,7 @@ class A2AEngine:
                             "should_inject_event": tc_result["should_inject_event"],
                         }}
                     else:
-                        challenge_content = await moderator_challenge(
+                        challenge_content, challenge_usage = await moderator_challenge(
                             base_url=self.base_url,
                             api_key=self.api_key,
                             model=self.chairman_model,
@@ -477,6 +488,7 @@ class A2AEngine:
                             moderator_style=self.moderator_style,
                             **self._moderator_kwargs(),
                         )
+                        self._accumulate_usage(challenge_usage)
 
                     self.turn_counter += 1
                     self.last_challenge_turn = self.turn_counter
@@ -542,7 +554,7 @@ class A2AEngine:
                 round_messages = [m for m in self.transcript if m.get("round") == round_num]
                 is_final = round_num == self.num_rounds
 
-                synthesis_content = await moderator_synthesis(
+                synthesis_content, synthesis_usage = await moderator_synthesis(
                     base_url=self.base_url,
                     api_key=self.api_key,
                     model=self.chairman_model,
@@ -553,6 +565,7 @@ class A2AEngine:
                     moderator_style=self.moderator_style,
                     **self._moderator_kwargs(),
                 )
+                self._accumulate_usage(synthesis_usage)
 
                 self.round_syntheses.append(synthesis_content)
 
@@ -1008,6 +1021,7 @@ class A2AEngine:
                         if fb_content and fb_content.strip():
                             content = fb_content
                             is_fallback = False
+                            self._accumulate_usage(fb_result.get("usage"))
                             self._log.info("Agent %s: batch fallback to %s succeeded", name, fb_model)
                             break
 
@@ -1066,6 +1080,9 @@ class A2AEngine:
                 if try_model != model and content and content.strip():
                     self._log.info("Agent %s: fallback model %s succeeded", name, try_model)
                 break  # got a response (successful or final fallback)
+
+        # Accumulate token usage from the LLM response
+        self._accumulate_usage(result.get("usage"))
 
         # Guard: catch empty content (tokens consumed but no output — #61)
         empty_content = not content or not content.strip()

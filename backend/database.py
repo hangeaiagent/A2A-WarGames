@@ -204,22 +204,33 @@ def _ensure_columns():
             conn.execute(text("ALTER TABLE messages ADD COLUMN compacted BOOLEAN DEFAULT FALSE"))
         if msg_cols and "finish_reason" not in msg_cols:
             conn.execute(text("ALTER TABLE messages ADD COLUMN finish_reason VARCHAR(20)"))
+        if msg_cols and "prompt_tokens" not in msg_cols:
+            conn.execute(text("ALTER TABLE messages ADD COLUMN prompt_tokens INTEGER"))
+        if msg_cols and "completion_tokens" not in msg_cols:
+            conn.execute(text("ALTER TABLE messages ADD COLUMN completion_tokens INTEGER"))
+
+    # --- session token usage columns ---
+    with engine.begin() as conn:
+        if sess_cols and "total_prompt_tokens" not in sess_cols:
+            conn.execute(text("ALTER TABLE sessions ADD COLUMN total_prompt_tokens INTEGER DEFAULT 0"))
+        if sess_cols and "total_completion_tokens" not in sess_cols:
+            conn.execute(text("ALTER TABLE sessions ADD COLUMN total_completion_tokens INTEGER DEFAULT 0"))
 
     # --- session_agenda + agenda_votes (CR-006) ----------------------------
     with engine.begin() as conn:
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS session_agenda (
-                id          SERIAL PRIMARY KEY,
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 session_id  INTEGER NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
                 item_key    VARCHAR(50) NOT NULL,
                 label       TEXT NOT NULL,
                 description TEXT DEFAULT '',
-                created_at  TIMESTAMPTZ DEFAULT NOW()
+                created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """))
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS agenda_votes (
-                id           SERIAL PRIMARY KEY,
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 session_id   INTEGER NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
                 item_key     VARCHAR(50) NOT NULL,
                 speaker_slug VARCHAR(100) NOT NULL,
@@ -227,7 +238,7 @@ def _ensure_columns():
                 round        INTEGER NOT NULL,
                 stance       VARCHAR(20) NOT NULL,
                 confidence   FLOAT DEFAULT 0.5,
-                created_at   TIMESTAMPTZ DEFAULT NOW()
+                created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """))
         # #169: composite indexes for fast per-session agenda/vote lookups

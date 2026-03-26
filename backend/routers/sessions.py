@@ -123,6 +123,8 @@ def _session_out(s: Session, msg_count: int = None) -> dict:
         "moderator_mandate": s.moderator_mandate or "",
         "moderator_persona_prompt": s.moderator_persona_prompt or "",
         "message_count": msg_count if msg_count is not None else len(s.messages),
+        "total_prompt_tokens": s.total_prompt_tokens or 0,
+        "total_completion_tokens": s.total_completion_tokens or 0,
         "created_at": s.created_at.isoformat(),
         "updated_at": s.updated_at.isoformat(),
         "checkpoint": _safe_json(s.checkpoint),
@@ -1575,6 +1577,42 @@ def _finalize_session(session_id: int, engine: A2AEngine, error: str = None):
             db.close()
     except Exception as e:
         logger.error("Failed to copy consensus_score for session %s: %s", session_id, e)
+
+    # --- Phase 5: Persist token usage totals ---
+    try:
+        db = get_db_session_with_user(user_id)
+        try:
+            session = db.query(Session).filter_by(id=session_id).first()
+            if session:
+                session.total_prompt_tokens = getattr(engine, '_total_prompt_tokens', 0)
+                session.total_completion_tokens = getattr(engine, '_total_completion_tokens', 0)
+                db.commit()
+        except Exception:
+            db.rollback()
+            raise
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error("Failed to persist token usage for session %s: %s", session_id, e)
+
+    # --- Phase 6: Report match to AgentPit ---
+    try:
+        from ..agentpit_reporter import report_match_to_agentpit
+        import asyncio
+
+        db = get_db_session_with_user(user_id)
+        try:
+            session = db.query(Session).filter_by(id=session_id).first()
+            if session and session.status == "complete":
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    asyncio.ensure_future(report_match_to_agentpit(session, engine, user_id=user_id))
+                else:
+                    loop.run_until_complete(report_match_to_agentpit(session, engine, user_id=user_id))
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error("AgentPit report failed for session %s: %s", session_id, e)
 
 _MAX_PRIOR_SESSIONS = 5          # #187: only include most recent N sessions
 _MAX_PRIOR_CONTEXT_CHARS = 4000  # #187: cap total chars (~1000 tokens)

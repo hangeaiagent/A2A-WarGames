@@ -19,10 +19,10 @@ onMounted(async () => {
   }
 })
 
-const totalMessages = computed(() => sessions.value.reduce((sum, s) => sum + (s.message_count || 0), 0))
+const totalPrompt = computed(() => sessions.value.reduce((sum, s) => sum + (s.total_prompt_tokens || 0), 0))
+const totalCompletion = computed(() => sessions.value.reduce((sum, s) => sum + (s.total_completion_tokens || 0), 0))
+const totalTokens = computed(() => totalPrompt.value + totalCompletion.value)
 const sessionCount = computed(() => sessions.value.length)
-const completedCount = computed(() => sessions.value.filter(s => s.status === 'complete').length)
-const runningCount = computed(() => sessions.value.filter(s => s.status === 'running').length)
 </script>
 
 <template>
@@ -35,20 +35,20 @@ const runningCount = computed(() => sessions.value.filter(s => s.status === 'run
     <div v-else class="usage-content">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.totalMessages') }}</div>
-          <div class="stat-value">{{ totalMessages.toLocaleString() }}</div>
+          <div class="stat-label">{{ t('tokenUsage.totalTokens') }}</div>
+          <div class="stat-value">{{ totalTokens.toLocaleString() }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t('tokenUsage.promptTokens') }}</div>
+          <div class="stat-value">{{ totalPrompt.toLocaleString() }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t('tokenUsage.completionTokens') }}</div>
+          <div class="stat-value">{{ totalCompletion.toLocaleString() }}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">{{ t('tokenUsage.sessionCount') }}</div>
           <div class="stat-value">{{ sessionCount }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.completedSessions') }}</div>
-          <div class="stat-value">{{ completedCount }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">{{ t('tokenUsage.runningSessions') }}</div>
-          <div class="stat-value">{{ runningCount }}</div>
         </div>
       </div>
 
@@ -58,16 +58,18 @@ const runningCount = computed(() => sessions.value.filter(s => s.status === 'run
           <thead>
             <tr>
               <th>{{ t('tokenUsage.session') }}</th>
-              <th>{{ t('tokenUsage.status') }}</th>
-              <th>{{ t('tokenUsage.messages') }}</th>
+              <th>{{ t('tokenUsage.promptTokens') }}</th>
+              <th>{{ t('tokenUsage.completionTokens') }}</th>
+              <th>{{ t('tokenUsage.totalTokens') }}</th>
               <th>{{ t('tokenUsage.date') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in sessions" :key="row.id">
               <td>{{ row.title || row.question || `#${row.id}` }}</td>
-              <td><span class="status-badge" :class="`status-${row.status}`">{{ t(`status.${row.status || 'pending'}`) }}</span></td>
-              <td>{{ row.message_count ?? 0 }}</td>
+              <td>{{ (row.total_prompt_tokens || 0).toLocaleString() }}</td>
+              <td>{{ (row.total_completion_tokens || 0).toLocaleString() }}</td>
+              <td>{{ ((row.total_prompt_tokens || 0) + (row.total_completion_tokens || 0)).toLocaleString() }}</td>
               <td>{{ row.created_at ? new Date(row.created_at).toLocaleDateString() : '-' }}</td>
             </tr>
           </tbody>

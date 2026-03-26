@@ -292,6 +292,10 @@ class Session(Base):
     # Injected as prior_session_context by resume_from_db when present
     compact_summary = Column(Text, nullable=True)
 
+    # Token usage totals (accumulated from all LLM calls in this session)
+    total_prompt_tokens     = Column(Integer, default=0, nullable=True)
+    total_completion_tokens = Column(Integer, default=0, nullable=True)
+
     created_at    = Column(DateTime, default=_now)
     updated_at    = Column(DateTime, default=_now, onupdate=_now)
 
@@ -331,6 +335,10 @@ class Message(Base):
 
     # Finish reason from LLM: 'stop' | 'error' | 'length' | None
     finish_reason   = Column(String(20), nullable=True)
+
+    # Token usage from LLM response
+    prompt_tokens      = Column(Integer, nullable=True)
+    completion_tokens  = Column(Integer, nullable=True)
 
     created_at      = Column(DateTime, default=_now)
 
